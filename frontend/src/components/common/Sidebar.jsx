@@ -72,9 +72,11 @@ function SideBar() {
             <SidebarHeader className="border-b px-3 py-4">
                 <div className="flex items-center justify-between">
                     {!collapsed && (
-                        <h1 className="text-lg font-bold">
-                            Expense Tracker
-                        </h1>
+                        <>
+                            <h1 className="text-lg font-bold">
+                                Expense Tracker
+                            </h1>
+                        </>
                     )}
 
                     <button

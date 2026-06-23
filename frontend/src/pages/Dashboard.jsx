@@ -148,29 +148,21 @@ export default function Dashboard({ setSelectedTransaction, setOpen }) {
 
             {/* Chart */}
 
-            <Card className="">
-                <CardHeader>
-                    <CardTitle>
-                        Monthly Income vs Expense
-                    </CardTitle>
-                </CardHeader>
-
-                <CardContent>
+            <Card className="p-0">
+                <CardContent className={`p-0`}>
                     <MonthlyBarChart data={monthlySummary} />
                 </CardContent>
             </Card>
 
             <div className="grid gap-6 lg:grid-cols-3 min-w-0">
-
                 {/* Recent Transactions */}
                 <Card className="lg:col-span-2 shadow-md border-0">
-                    <CardContent>
+                    <CardContent >
                         <RecentTransactions transactions={recentTransactions} />
                     </CardContent>
                 </Card>
-                <Card className="">
-
-                    <CardContent>
+                <Card className="p-0">
+                    <CardContent className="p-0">
                         <ExpensePieChart data={expenseCategories} />
                     </CardContent>
                 </Card>

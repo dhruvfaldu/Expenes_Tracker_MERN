@@ -7,6 +7,11 @@ import {
     Legend,
 } from "recharts";
 
+import {
+    PieChart as PieChartIcon,
+    IndianRupee,
+} from "lucide-react";
+
 const COLORS = [
     "var(--chart-1)",
     "var(--chart-2)",
@@ -19,48 +24,72 @@ const COLORS = [
 export default function ExpensePieChart({ data = [] }) {
 
     const total = data.reduce(
-        (acc, cur) => acc + cur.amount,
+        (acc, cur) => acc + Number(cur.amount),
         0
     );
 
     if (!data.length) {
         return (
-            <div className="w-full h-[360px] bg-card border border-border rounded-xl p-4 flex items-center justify-center">
-                <p className="text-sm text-muted-foreground">
-                    No expense data available
-                </p>
+            <div className="rounded-2xl border bg-card shadow-sm">
+                <div className="flex h-[380px] flex-col items-center justify-center">
+                    <PieChartIcon
+                        size={48}
+                        className="mb-3 text-muted-foreground"
+                    />
+
+                    <h3 className="font-semibold">
+                        No Expense Data
+                    </h3>
+
+                    <p className="text-sm text-muted-foreground">
+                        Add expense transactions to view category analysis
+                    </p>
+                </div>
             </div>
         );
     }
 
     return (
-        <div className="w-full h-[360px] bg-card ">
-
+        <div className="overflow-hidden bg-card shadow-sm">
             {/* Header */}
-            <div className="flex items-center justify-between mb-4">
-                <h1 className="text-sm font-semibold text-foreground">
-                    Expense Breakdown
-                </h1>
 
-                <span className="text-xs text-muted-foreground">
-                    Categories
-                </span>
+            <div className="bg-gradient-to-r from-violet-500 via-purple-500 to-indigo-500 p-5 text-white">
+                <div className="flex items-center justify-between">
+                    <div>
+                        <h2 className="flex items-center gap-2 text-lg font-semibold">
+                            <PieChartIcon size={20} />
+                            Expense Breakdown
+                        </h2>
+
+                        <p className="text-sm text-violet-100">
+                            Category-wise expense distribution
+                        </p>
+                    </div>
+
+                    <div className="rounded-full bg-white/20 px-4 py-2 backdrop-blur">
+                        {data.length} Categories
+                    </div>
+                </div>
             </div>
 
-            <div className="relative w-full h-[260px]">
+            {/* Chart */}
 
-                <ResponsiveContainer width="100%" height="100%">
+            <div className="relative h-[360px] p-4">
+                <ResponsiveContainer
+                    width="100%"
+                    height="100%"
+                >
                     <PieChart>
-
                         <Pie
                             data={data}
                             dataKey="amount"
                             nameKey="category"
-                            innerRadius={75}
-                            outerRadius={105}
-                            paddingAngle={3}
+                            innerRadius={80}
+                            outerRadius={115}
+                            paddingAngle={4}
                             stroke="var(--background)"
                             strokeWidth={2}
+                            animationDuration={1200}
                         >
                             {data.map((_, index) => (
                                 <Cell
@@ -76,39 +105,48 @@ export default function ExpensePieChart({ data = [] }) {
                         </Pie>
 
                         <Tooltip
-                            contentStyle={{
-                                backgroundColor: "var(--popover)",
-                                border: "1px solid var(--border)",
-                                borderRadius: "12px",
-                                color: "var(--popover-foreground)",
-                                fontSize: "12px",
-                            }}
                             formatter={(value) => [
-                                `₹${Number(value).toLocaleString()}`,
-                                "Amount",
+                                `₹${Number(
+                                    value
+                                ).toLocaleString()}`,
+                                "Expense",
                             ]}
+                            contentStyle={{
+                                background:
+                                    "var(--popover)",
+                                border:
+                                    "1px solid var(--border)",
+                                borderRadius: "12px",
+                            }}
                         />
 
                         <Legend
                             verticalAlign="bottom"
                             iconType="circle"
-                            formatter={(value) => (
-                                <span className="text-xs text-muted-foreground">
-                                    {value}
-                                </span>
-                            )}
+                            wrapperStyle={{
+                                paddingTop: "20px",
+                                fontSize: "12px",
+                            }}
                         />
                     </PieChart>
                 </ResponsiveContainer>
 
-                {/* Center Label */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                    <p className="text-xs text-muted-foreground">
-                        Total Expense
-                    </p>
+                {/* Center Content */}
 
-                    <p className="text-xl font-bold text-foreground">
+                <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
+                    <div className="mb-2 flex items-center gap-1 text-muted-foreground">
+                        <IndianRupee size={14} />
+                        <span className="text-xs">
+                            Total Expense
+                        </span>
+                    </div>
+
+                    <h2 className="text-3xl font-bold">
                         ₹{total.toLocaleString()}
+                    </h2>
+
+                    <p className="mt-1 text-xs text-muted-foreground">
+                        Across {data.length} categories
                     </p>
                 </div>
             </div>

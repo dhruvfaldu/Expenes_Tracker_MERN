@@ -131,9 +131,20 @@ const loginUser = async (req, res) => {
 }
 
 const logoutUser = (req, res) => {
-    res.clearCookie("accessToken");
+    const isProduction =
+        process.env.NODE_ENV === "production";
 
-    res.clearCookie("refreshToken");
+    res.clearCookie("accessToken", {
+        httpOnly: true,
+        secure: isProduction,
+        sameSite: isProduction ? "none" : "lax",
+    });
+
+    res.clearCookie("refreshToken", {
+        httpOnly: true,
+        secure: isProduction,
+        sameSite: isProduction ? "none" : "lax",
+    });
     res.status(200).json({ success: true, message: 'User logged out successfully' });
 }
 
@@ -170,10 +181,9 @@ const refreshTokenHandler = async (
             process.env.REFRESH_TOKEN_SECRET
         );
 
-        const accessToken =
-            generateAccessToken(
-                decoded.userId
-            );
+        const accessToken = generateAccessToken(decoded.userId);
+
+        const refreshToken = generateRefreshToken(decoded.userId);
 
         const isProduction = process.env.NODE_ENV === "production";
 

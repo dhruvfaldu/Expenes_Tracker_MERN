@@ -42,32 +42,21 @@ const registerUser = async (req, res) => {
             user._id
         );
 
-        res.cookie(
-            "accessToken",
-            accessToken,
-            {
-                httpOnly: true,
-                secure:
-                    process.env.NODE_ENV ===
-                    "production",
-                sameSite: "strict",
-                maxAge: 15 * 60 * 1000,
-            }
-        );
+        const isProduction = process.env.NODE_ENV === "production";
 
-        res.cookie(
-            "refreshToken",
-            refreshToken,
-            {
-                httpOnly: true,
-                secure:
-                    process.env.NODE_ENV ===
-                    "production",
-                sameSite: "strict",
-                maxAge:
-                    7 * 24 * 60 * 60 * 1000,
-            }
-        );
+        res.cookie("accessToken", accessToken, {
+            httpOnly: true,
+            secure: isProduction,
+            sameSite: isProduction ? "none" : "lax",
+            maxAge: 15 * 60 * 1000,
+        });
+
+        res.cookie("refreshToken", refreshToken, {
+            httpOnly: true,
+            secure: isProduction,
+            sameSite: isProduction ? "none" : "lax",
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+        });
 
         res.status(201).json({
             success: true,
@@ -109,31 +98,21 @@ const loginUser = async (req, res) => {
 
         const refreshToken = generateRefreshToken(user._id);
 
-        res.cookie(
-            "accessToken",
-            accessToken,
-            {
+        const isProduction = process.env.NODE_ENV === "production";
 
-                httpOnly: true,
-                secure: false,
-                sameSite: "lax",
-                maxAge: 15 * 60 * 1000,
-            }
-        );
+        res.cookie("accessToken", accessToken, {
+            httpOnly: true,
+            secure: isProduction,
+            sameSite: isProduction ? "none" : "lax",
+            maxAge: 15 * 60 * 1000,
+        });
 
-        res.cookie(
-            "refreshToken",
-            refreshToken,
-            {
-                httpOnly: true,
-                secure:
-                    process.env.NODE_ENV ===
-                    "production",
-                sameSite: "strict",
-                maxAge:
-                    7 * 24 * 60 * 60 * 1000,
-            }
-        );
+        res.cookie("refreshToken", refreshToken, {
+            httpOnly: true,
+            secure: isProduction,
+            sameSite: isProduction ? "none" : "lax",
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+        });
 
         res.status(200).json({
             success: true,
@@ -196,18 +175,21 @@ const refreshTokenHandler = async (
                 decoded.userId
             );
 
-        res.cookie(
-            "accessToken",
-            accessToken,
-            {
-                httpOnly: true,
-                secure:
-                    process.env.NODE_ENV ===
-                    "production",
-                sameSite: "strict",
-                maxAge: 15 * 60 * 1000,
-            }
-        );
+        const isProduction = process.env.NODE_ENV === "production";
+
+        res.cookie("accessToken", accessToken, {
+            httpOnly: true,
+            secure: isProduction,
+            sameSite: isProduction ? "none" : "lax",
+            maxAge: 15 * 60 * 1000,
+        });
+
+        res.cookie("refreshToken", refreshToken, {
+            httpOnly: true,
+            secure: isProduction,
+            sameSite: isProduction ? "none" : "lax",
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+        });
 
         res.status(200).json({
             success: true,

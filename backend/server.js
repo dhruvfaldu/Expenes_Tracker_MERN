@@ -16,10 +16,17 @@ import categoryRoutes from './routes/categoryRoutes.js';
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(cors({
-    origin: [process.env.CLIENT_URL, 'http://localhost:5173'],
-    credentials: true,
-}));
+app.use(
+    cors({
+        origin: [
+            "https://expenes-tracker-mern.vercel.app",
+            "http://localhost:5173",
+        ],
+        credentials: true,
+        methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+        allowedHeaders: ["Content-Type", "Authorization"],
+    })
+);
 app.use(express.json());
 app.use(cookieParser());
 

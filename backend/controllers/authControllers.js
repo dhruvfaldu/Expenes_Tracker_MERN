@@ -116,7 +116,7 @@ const loginUser = async (req, res) => {
 
                 httpOnly: true,
                 secure: false,
-                sameSite: "strict",
+                sameSite: "lax",
                 maxAge: 15 * 60 * 1000,
             }
         );

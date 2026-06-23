@@ -27,8 +27,6 @@ export default function Dashboard({ setSelectedTransaction, setOpen }) {
     const { monthlySummary, transactions, totalExpense, totalIncome, balance, loading } = useSelector((state) => state.expense);
     const { expenseCategories } = useSelector((state) => state.category);
     const { user } = useSelector((state) => state.auth);
-    console.log(user);
-
 
     const recentTransactions = useMemo(() => {
         return [...transactions].reverse().slice(0, 5);

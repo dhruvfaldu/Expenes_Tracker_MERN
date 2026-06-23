@@ -1,10 +1,10 @@
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { useState } from "react";
+import { Input } from "@/components/ui/input";
 
-import { getCategoriesData } from "@/store/slice/categorySlice";
-import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
 import {
     Dialog,
     DialogContent,
@@ -13,8 +13,6 @@ import {
     DialogFooter,
 } from "@/components/ui/dialog";
 
-import { Input } from "@/components/ui/input";
-
 import {
     Select,
     SelectContent,
@@ -22,22 +20,48 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { deleteCategoryData } from "../store/slice/categorySlice";
-import { createCategoryData } from "../store/slice/categorySlice";
+
+import {
+    Plus,
+    Wallet,
+    ArrowDownCircle,
+    ArrowUpCircle,
+    FolderOpen,
+    Trash2,
+    Tag,
+    Utensils,
+    Car,
+    Home,
+    Briefcase,
+    Heart,
+    Gift,
+    ShoppingCart,
+    PiggyBank,
+} from "lucide-react";
+
+import {
+    getCategoriesData,
+    createCategoryData,
+    deleteCategoryData,
+} from "@/store/slice/categorySlice";
 
 const Categories = () => {
+    const dispatch = useDispatch();
+
+    const { categories, categoriesLoading } = useSelector(
+        (state) => state.category
+    );
 
     const [open, setOpen] = useState(false);
+
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+    const [selectedCategory, setSelectedCategory] = useState(null);
+
     const [formData, setFormData] = useState({
         name: "",
         type: "expense",
     });
-    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-    const [selectedCategory, setSelectedCategory] = useState(null);
-
-    const dispatch = useDispatch();
-
-    const { categories, categoriesLoading } = useSelector((state) => state.category);
 
     useEffect(() => {
         dispatch(getCategoriesData());
@@ -73,6 +97,56 @@ const Categories = () => {
         }
     };
 
+    const getCategoryIcon = (name) => {
+        const category = name.toLowerCase();
+
+        if (category.includes("food"))
+            return <Utensils className="h-5 w-5" />;
+
+        if (category.includes("travel"))
+            return <Car className="h-5 w-5" />;
+
+        if (category.includes("education"))
+            return <ArrowUpCircle className="h-5 w-5" />;
+
+        if (category.includes("rent"))
+            return <Home className="h-5 w-5" />;
+
+        if (category.includes("salary"))
+            return <Briefcase className="h-5 w-5" />;
+
+        if (category.includes("investment"))
+            return <PiggyBank className="h-5 w-5" />;
+
+        if (category.includes("shopping"))
+            return <ShoppingCart className="h-5 w-5" />;
+
+        if (category.includes("transport"))
+            return <Car className="h-5 w-5" />;
+
+        if (category.includes("other"))
+            return <FolderOpen className="h-5 w-5" />;
+
+        if (category.includes("loan"))
+            return <Wallet className="h-5 w-5" />;
+
+        if (category.includes("entertainment"))
+            return <ArrowDownCircle className="h-5 w-5" />;
+
+        if (category.includes("gift"))
+            return <Gift className="h-5 w-5" />;
+
+        if (category.includes("health"))
+            return <Heart className="h-5 w-5" />;
+
+
+        return <Tag className="h-5 w-5" />;
+    };
+
+    const expenseCount = categories.filter((c) => c.type === "expense").length;
+
+    const incomeCount = categories.filter((c) => c.type === "income").length;
+
     if (categoriesLoading) {
         return (
             <div className="p-6">
@@ -83,88 +157,202 @@ const Categories = () => {
 
     return (
         <div className="space-y-6 p-6">
-            <div className="flex items-center justify-between">
+
+            {/* Header */}
+            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+
                 <div>
-                    <h1 className="text-3xl font-bold">Categories</h1>
-                    <span className="text-muted-foreground">
-                        {categories.length} categories
-                    </span>
+                    <h1 className="text-3xl font-bold tracking-tight">
+                        Categories
+                    </h1>
+
+                    <p className="text-muted-foreground">
+                        Manage income and expense categories
+                    </p>
                 </div>
 
-                <Button onClick={() => setOpen(true)}>
+                <Button
+                    className="gap-2"
+                    onClick={() => setOpen(true)}
+                >
+                    <Plus className="h-4 w-4" />
                     Add Category
                 </Button>
             </div>
 
+            {/* Stats Cards */}
+            <div className="grid gap-4 md:grid-cols-3">
+
+                <Card>
+                    <CardContent className="p-6">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-sm text-muted-foreground">
+                                    Total Categories
+                                </p>
+
+                                <h2 className="text-3xl font-bold">
+                                    {categories.length}
+                                </h2>
+                            </div>
+
+                            <div className="flex justify-center h-12 w-12 rounded-full bg-primary/20 items-center gap-2">
+                                <Wallet className="h-6 w-6 text-primary" />
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                <Card>
+                    <CardContent className="p-6">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-sm text-muted-foreground">
+                                    Expense Categories
+                                </p>
+
+                                <h2 className="text-3xl font-bold">
+                                    {expenseCount}
+                                </h2>
+                            </div>
+
+                            <div className="flex justify-center h-12 w-12 rounded-full bg-red-500/20 items-center gap-2">
+                                <ArrowDownCircle className="h-6 w-6 text-red-500" />
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                <Card>
+                    <CardContent className="p-6">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-sm text-muted-foreground">
+                                    Income Categories
+                                </p>
+
+                                <h2 className="text-3xl font-bold">
+                                    {incomeCount}
+                                </h2>
+                            </div>
+
+                            <div className="flex justify-center h-12 w-12 rounded-full bg-green-500/20 items-center gap-2">
+                                <ArrowUpCircle className="h-6 w-6 text-green-500" />
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+
+            </div>
+
+            {/* Category List */}
             {categories.length === 0 ? (
                 <Card>
-                    <CardContent className="p-8 text-center">
-                        No categories found.
+                    <CardContent className="flex flex-col items-center gap-4 py-16">
+
+                        <FolderOpen className="h-12 w-12 text-muted-foreground" />
+
+                        <div className="text-center">
+                            <h3 className="font-semibold">
+                                No Categories Yet
+                            </h3>
+
+                            <p className="text-muted-foreground">
+                                Create your first category to start
+                                tracking transactions.
+                            </p>
+                        </div>
+
+                        <Button onClick={() => setOpen(true)}>
+                            <Plus className="mr-2 h-4 w-4" />
+                            Add Category
+                        </Button>
+
                     </CardContent>
                 </Card>
             ) : (
-                <div className="space-y-3">
-                    <div className="space-y-3">
-                        {categories.map((category) => (
-                            <Card key={category._id}>
-                                <CardContent className="flex items-center justify-between p-4">
-                                    <div>
-                                        <h3 className="font-medium">
-                                            {category.name}
-                                        </h3>
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
 
-                                        <p className="text-sm text-muted-foreground capitalize">
-                                            {category.type} Category
-                                        </p>
+                    {categories.map((category) => (
+                        <Card
+                            key={category._id}
+                            className="transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+                        >
+                            <CardContent className="p-5">
+
+                                <div className="flex items-start justify-between">
+
+                                    <div className="flex gap-3">
+
+                                        <div
+                                            className={`rounded-xl p-3
+                                            ${category.type === "income"
+                                                    ? "bg-green-100 text-green-600 dark:bg-green-900/20"
+                                                    : "bg-red-100 text-red-600 dark:bg-red-900/20"
+                                                }`}
+                                        >
+                                            {getCategoryIcon(category.name)}
+                                        </div>
+
+                                        <div>
+                                            <h3 className="font-semibold">
+                                                {category.name}
+                                            </h3>
+
+                                            <p className="text-sm capitalize text-muted-foreground">
+                                                {category.type} Category
+                                            </p>
+                                        </div>
                                     </div>
 
                                     <Button
-                                        variant="destructive"
-                                        size="sm"
+                                        variant="ghost"
+                                        size="icon"
                                         onClick={() => {
                                             setSelectedCategory(category);
                                             setDeleteDialogOpen(true);
                                         }}
                                     >
-                                        Delete
+                                        <Trash2 className="h-4 w-4 text-destructive" />
                                     </Button>
-                                </CardContent>
-                            </Card>
-                        ))}
-                    </div>
+
+                                </div>
+
+                            </CardContent>
+                        </Card>
+                    ))}
+
                 </div>
             )}
 
-
-            {/* //ADD CATEGORY MODAL */}
+            {/* Add Category Dialog */}
             <Dialog open={open} onOpenChange={setOpen}>
-                <DialogContent className="sm:max-w-md">
+                <DialogContent className=" p-5 " >
+
                     <DialogHeader>
-                        <DialogTitle>
+                        <DialogTitle className="text-xl font-semibold mb-2">
                             Add Category
                         </DialogTitle>
                     </DialogHeader>
 
-                    <div className="space-y-4 py-4">
+                    <div className="space-y-4 py-2">
+
                         <div>
-                            <label className="text-sm font-medium">
-                                Category Name
+                            <label className="mb-2 block text-sm font-medium">
+                                Category Name *
                             </label>
 
                             <Input
                                 placeholder="Enter category name"
                                 value={formData.name}
                                 onChange={(e) =>
-                                    setFormData({
-                                        ...formData,
-                                        name: e.target.value,
-                                    })
+                                    setFormData({ ...formData, name: e.target.value, })
                                 }
                             />
                         </div>
 
                         <div>
-                            <label className="text-sm font-medium">
+                            <label className="mb-2 block text-sm font-medium">
                                 Type
                             </label>
 
@@ -177,11 +365,11 @@ const Categories = () => {
                                     })
                                 }
                             >
-                                <SelectTrigger>
+                                <SelectTrigger position="pop-start" align="end">
                                     <SelectValue />
                                 </SelectTrigger>
 
-                                <SelectContent>
+                                <SelectContent >
                                     <SelectItem value="expense">
                                         Expense
                                     </SelectItem>
@@ -192,9 +380,11 @@ const Categories = () => {
                                 </SelectContent>
                             </Select>
                         </div>
+
                     </div>
 
                     <DialogFooter>
+
                         <Button
                             variant="outline"
                             onClick={() => setOpen(false)}
@@ -205,25 +395,27 @@ const Categories = () => {
                         <Button onClick={handleCreateCategory}>
                             Add Category
                         </Button>
+
                     </DialogFooter>
+
                 </DialogContent>
             </Dialog>
 
-            {/* //DELETE DIALOG */}
+            {/* Delete Dialog */}
             <Dialog
                 open={deleteDialogOpen}
                 onOpenChange={setDeleteDialogOpen}
             >
-                <DialogContent className="sm:max-w-md">
+                <DialogContent className="p-5 border-red-500 border-l-4">
+
                     <DialogHeader>
-                        <DialogTitle>
+                        <DialogTitle className={`text-xl font-semibold mb-1`}>
                             Delete Category
                         </DialogTitle>
                     </DialogHeader>
 
-                    <p className="text-sm text-muted-foreground">
-                        Are you sure you want to delete
-                        {" "}
+                    <p className="text-sm text-muted-foreground mb-4">
+                        Are you sure you want to delete{" "}
                         <span className="font-semibold text-foreground">
                             {selectedCategory?.name}
                         </span>
@@ -231,9 +423,12 @@ const Categories = () => {
                     </p>
 
                     <DialogFooter>
+
                         <Button
                             variant="outline"
-                            onClick={() => setDeleteDialogOpen(false)}
+                            onClick={() =>
+                                setDeleteDialogOpen(false)
+                            }
                         >
                             Cancel
                         </Button>
@@ -244,9 +439,12 @@ const Categories = () => {
                         >
                             Delete
                         </Button>
+
                     </DialogFooter>
+
                 </DialogContent>
             </Dialog>
+
         </div>
     );
 };

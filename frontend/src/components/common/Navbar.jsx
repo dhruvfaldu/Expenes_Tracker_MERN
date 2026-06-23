@@ -99,7 +99,7 @@ function Navbar() {
 
                             {/* USER INFO */}
                             <DropdownMenuLabel>
-                                <div className="flex flex-col">
+                                <div className="flex flex-col gap-1">
                                     <span className="font-medium">{user?.name}</span>
                                     <span className="text-xs text-muted-foreground">
                                         {user?.email}

@@ -113,10 +113,9 @@ const loginUser = async (req, res) => {
             "accessToken",
             accessToken,
             {
+
                 httpOnly: true,
-                secure:
-                    process.env.NODE_ENV ===
-                    "production",
+                secure: false,
                 sameSite: "strict",
                 maxAge: 15 * 60 * 1000,
             }
